@@ -1,0 +1,31 @@
+#boards-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.board {
+    justify-self: center;
+    width: 35vw;
+    height: 35vw;
+
+    background-color: white;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+}
+
+.board > .cell {
+    border: 1px solid white;
+    background-color: gray;
+}
+
+@media (max-width: 800px) {
+    #boards-container {
+        grid-template-columns: 1fr;
+    }
+    .board {
+        width: 35vh;
+        height: 35vh;
+    }
+}
