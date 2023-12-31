@@ -1,9 +1,9 @@
 import { Gameboard } from "../types";
 
-export const createBoard = (): Gameboard => {
+export const createBoard = (width: number, height: number): Gameboard => {
     let board: Gameboard = {
-        boardGrid: Array.from({ length: 10 }, () =>
-            Array.from({ length: 10 }, () => ({
+        boardGrid: Array.from({ length: width }, () =>
+            Array.from({ length: height }, () => ({
                 ship: null,
                 hit: false,
             }))

@@ -9,6 +9,10 @@ export const createShip = (length: number): Ship => {
             if (!this.isSunk()) {
                 this.hits++;
             }
+
+            if (this.isSunk()) {
+                this.sunk = true;
+            }
         },
         isSunk() {
             return this.hits === this.length;
