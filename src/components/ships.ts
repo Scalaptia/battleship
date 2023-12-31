@@ -6,11 +6,9 @@ export const createShip = (length: number): Ship => {
         hits: 0,
         sunk: false,
         hit() {
-            if (this.isSunk()) {
-                return;
+            if (!this.isSunk()) {
+                this.hits++;
             }
-
-            this.hits++;
         },
         isSunk() {
             return this.hits === this.length;

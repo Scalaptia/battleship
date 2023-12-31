@@ -1,31 +1,57 @@
-import "../styles/board.css";
+import { Gameboard } from "../types";
 
-export const board = (width: number, height: number) => {
-    const boardGrid = [];
+export const createBoard = (): Gameboard => {
+    let board: Gameboard = {
+        boardGrid: Array.from({ length: 10 }, () =>
+            Array.from({ length: 10 }, () => ({
+                ship: null,
+                hit: false,
+            }))
+        ),
+        ships: [],
+        missedShots: 0,
+        placeShip(ship, x, y, vertical) {
+            this.ships.push(ship);
 
-    for (let i = 0; i < height; i++) {
-        const row: HTMLDivElement[] = [];
+            if (vertical) {
+                for (let i = 0; i < ship.length; i++) {
+                    if (this.boardGrid[y + i][x].ship) {
+                        this.ships.pop();
+                        return false;
+                    }
 
-        for (let j = 0; j < width; j++) {
-            const cell = document.createElement("div");
-            cell.classList.add("cell");
-            row.push(cell);
-        }
+                    this.boardGrid[y + i][x].ship = ship;
+                }
+            } else {
+                for (let i = 0; i < ship.length; i++) {
+                    if (this.boardGrid[y][x + i].ship) {
+                        this.ships.pop();
+                        return false;
+                    }
 
-        boardGrid.push(row);
-    }
+                    this.boardGrid[y][x + i].ship = ship;
+                }
+            }
 
-    const boardEl = document.createElement("div");
-    boardEl.classList.add("board");
+            return true;
+        },
+        receiveAttack(x, y) {
+            const cell = this.boardGrid[y][x];
 
-    boardGrid.forEach((row) => {
-        row.forEach((cell) => {
-            boardEl.appendChild(cell);
-        });
-    });
+            if (!cell.hit) {
+                cell.hit = true;
 
-    return {
-        boardGrid,
-        boardEl,
+                if (cell.ship) {
+                    cell.ship.hit();
+                } else {
+                    this.missedShots++;
+                }
+            }
+        },
+        allSunk() {
+            return this.ships.every((ship) => ship.sunk);
+        },
     };
+
+    return board;
 };
