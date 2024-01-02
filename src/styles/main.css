@@ -2,28 +2,61 @@
     color-scheme: light dark;
 }
 
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto", sans-serif;
+    background-color: #0d213344;
+    color: white;
+    height: 100vh;
+    display: grid;
+    justify-content: center;
+    align-content: center;
+}
+
 /* Gameboard */
 
 #boards-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    gap: 8rem;
+    transform: rotateX(45deg) rotateZ(30deg);
+    /* transform: rotate(30deg) skew(-30deg); */
 }
 
-.board {
+board {
     justify-self: center;
-    width: 35vw;
-    height: 35vw;
+    width: 25vw;
+    height: 25vw;
 
     background-color: white;
     display: grid;
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(10, 1fr);
+
+    background-image: url(../../public/water.gif);
+    background-size: cover;
 }
 
-.cell {
+cell {
+    position: relative;
     border: 1px solid white;
-    background-color: rgb(58, 137, 218);
+    /* background-color: rgb(58, 137, 218); */
+}
+
+cell::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0);
+    transition: background 0.1s ease;
+}
+
+cell:hover::after {
+    background: rgba(0, 0, 0, 0.5); /* adjust transparency as needed */
 }
 
 @media (max-width: 800px) {
@@ -37,22 +70,23 @@
 }
 
 /* Ships */
+
 .ship {
+    background-image: none;
     background-color: rgb(112, 112, 112);
 }
 
 .miss {
+    background-image: none;
     background-color: rgb(13, 33, 51);
 }
 
 .hit {
+    background-image: none;
     background-color: red;
 }
 
 .sunk {
-    background-color: rgb(49, 197, 61);
-}
-
-#cpu-board > .cell:hover {
-    opacity: 0.6;
+    background-image: none;
+    background-color: hsl(125, 60%, 48%);
 }

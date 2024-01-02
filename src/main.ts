@@ -27,24 +27,28 @@ cpu.gameboard.placeShip(Ships.Submarine, 0, 3, false);
 cpu.gameboard.placeShip(Ships.Destroyer, 0, 4, false);
 
 /* UI */
-const fillBoard = (boardEl: HTMLDivElement, board: Gameboard) => {
+const fillBoard = (boardEl: HTMLElement, board: Gameboard, show: boolean) => {
     boardEl.innerHTML = "";
 
     for (let i = 0; i < board.boardGrid.length; i++) {
         for (let j = 0; j < board.boardGrid[i].length; j++) {
-            const cellEl = document.createElement("div");
-
-            cellEl.classList.add("cell");
+            const cellEl = document.createElement("cell");
             cellEl.dataset.y = `${i}`;
             cellEl.dataset.x = `${j}`;
 
+            if (show) {
+                if (board.boardGrid[i][j].ship) {
+                    cellEl.classList.add("ship");
+                }
+            }
+
             if (board.boardGrid[i][j].ship) {
                 if (board.boardGrid[i][j].hit) {
-                    cellEl.classList.add("hit");
-                }
-
-                if (board.boardGrid[i][j].ship!.sunk) {
-                    cellEl.classList.add("sunk");
+                    if (board.boardGrid[i][j].ship!.sunk) {
+                        cellEl.classList.add("sunk");
+                    } else {
+                        cellEl.classList.add("hit");
+                    }
                 }
             } else {
                 if (board.boardGrid[i][j].hit) {
@@ -59,16 +63,14 @@ const fillBoard = (boardEl: HTMLDivElement, board: Gameboard) => {
 
 const boardsContainerEl = document.getElementById("boards-container")!;
 
-const p1BoardEl = document.createElement("div");
+const p1BoardEl = document.createElement("board");
 p1BoardEl.id = "p1-board";
-p1BoardEl.classList.add("board");
 
-const cpuBoardEl = document.createElement("div");
+const cpuBoardEl = document.createElement("board");
 cpuBoardEl.id = "cpu-board";
-cpuBoardEl.classList.add("board");
 
-fillBoard(p1BoardEl, p1.gameboard);
-fillBoard(cpuBoardEl, cpu.gameboard);
+fillBoard(p1BoardEl, p1.gameboard, true);
+fillBoard(cpuBoardEl, cpu.gameboard, false);
 
 boardsContainerEl.appendChild(p1BoardEl);
 boardsContainerEl.appendChild(cpuBoardEl);
@@ -79,5 +81,5 @@ cpuBoardEl.addEventListener("click", (e) => {
     console.log(x, y);
 
     p1.attack(cpu.gameboard, x, y);
-    fillBoard(cpuBoardEl, cpu.gameboard);
+    fillBoard(cpuBoardEl, cpu.gameboard, false);
 });
