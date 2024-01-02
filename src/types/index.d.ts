@@ -19,3 +19,9 @@ export type Gameboard = {
     receiveAttack(x: number, y: number): void;
     allSunk(): boolean;
 };
+
+export type Player = {
+    name: string;
+    gameboard: Gameboard;
+    attack(opponent: Gameboard, x: number, y: number): void;
+};
