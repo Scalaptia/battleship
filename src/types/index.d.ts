@@ -24,4 +24,5 @@ export type Player = {
     name: string;
     gameboard: Gameboard;
     attack(opponent: Gameboard, x: number, y: number): void;
+    attackRand(opponent: Gameboard): void;
 };
