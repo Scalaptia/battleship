@@ -28,18 +28,28 @@ cpu.gameboard.placeShip(Ships.Destroyer, 0, 4, false);
 
 /* UI */
 const fillBoard = (boardEl: HTMLDivElement, board: Gameboard) => {
+    boardEl.innerHTML = "";
+
     for (let i = 0; i < board.boardGrid.length; i++) {
         for (let j = 0; j < board.boardGrid[i].length; j++) {
             const cellEl = document.createElement("div");
 
             cellEl.classList.add("cell");
-
-            if (board.boardGrid[i][j].hit) {
-                cellEl.classList.add("hit");
-            }
+            cellEl.dataset.y = `${i}`;
+            cellEl.dataset.x = `${j}`;
 
             if (board.boardGrid[i][j].ship) {
-                cellEl.classList.add("ship");
+                if (board.boardGrid[i][j].hit) {
+                    cellEl.classList.add("hit");
+                }
+
+                if (board.boardGrid[i][j].ship!.sunk) {
+                    cellEl.classList.add("sunk");
+                }
+            } else {
+                if (board.boardGrid[i][j].hit) {
+                    cellEl.classList.add("miss");
+                }
             }
 
             boardEl.appendChild(cellEl);
@@ -62,3 +72,12 @@ fillBoard(cpuBoardEl, cpu.gameboard);
 
 boardsContainerEl.appendChild(p1BoardEl);
 boardsContainerEl.appendChild(cpuBoardEl);
+
+cpuBoardEl.addEventListener("click", (e) => {
+    const x = Number((e.target as HTMLElement).dataset.x);
+    const y = Number((e.target as HTMLElement).dataset.y);
+    console.log(x, y);
+
+    p1.attack(cpu.gameboard, x, y);
+    fillBoard(cpuBoardEl, cpu.gameboard);
+});

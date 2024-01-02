@@ -21,9 +21,9 @@
     grid-template-rows: repeat(10, 1fr);
 }
 
-.board > .cell {
+.cell {
     border: 1px solid white;
-    background-color: gray;
+    background-color: rgb(58, 137, 218);
 }
 
 @media (max-width: 800px) {
@@ -37,6 +37,22 @@
 }
 
 /* Ships */
-.cell.ship {
-    background-color: blue;
+.ship {
+    background-color: rgb(112, 112, 112);
+}
+
+.miss {
+    background-color: rgb(13, 33, 51);
+}
+
+.hit {
+    background-color: red;
+}
+
+.sunk {
+    background-color: rgb(49, 197, 61);
+}
+
+#cpu-board > .cell:hover {
+    opacity: 0.6;
 }
