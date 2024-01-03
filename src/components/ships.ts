@@ -1,4 +1,4 @@
-import { Ship } from "../types";
+import { Ship } from "..";
 
 export const createShip = (length: number): Ship => {
     const ship: Ship = {

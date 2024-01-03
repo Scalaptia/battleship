@@ -1,4 +1,4 @@
-import { Gameboard } from "../types";
+import { Gameboard } from "..";
 
 export const createBoard = (width: number, height: number): Gameboard => {
     let board: Gameboard = {

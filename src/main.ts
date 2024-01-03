@@ -1,7 +1,7 @@
 import "./styles/main.css";
 import { createPlayer } from "./components/player";
 import { createShip } from "./components/ships";
-import { Gameboard } from "./types";
+import { Gameboard } from ".";
 
 const Ships = {
     Carrier: createShip(5),

@@ -1,4 +1,4 @@
-import { Player } from "../types";
+import { Player } from "..";
 import { createBoard } from "./board";
 
 export const createPlayer = (name: string): Player => {
