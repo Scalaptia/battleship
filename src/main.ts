@@ -1,7 +1,8 @@
 import "./styles/main.css";
 import { createPlayer } from "./components/player";
 import { createShip } from "./components/ships";
-import { Gameboard } from ".";
+import { Player } from "./";
+import { Gameboard } from "./";
 
 const Ships = {
     Carrier: createShip(5),
@@ -34,8 +35,8 @@ const renderBoard = (boardEl: HTMLElement, board: Gameboard, show: boolean) => {
     for (let i = 0; i < board.boardGrid.length; i++) {
         for (let j = 0; j < board.boardGrid[i].length; j++) {
             const cellEl = document.createElement("cell");
-            cellEl.dataset.y = `${i}`;
-            cellEl.dataset.x = `${j}`;
+            cellEl.dataset.x = `${i}`;
+            cellEl.dataset.y = `${j}`;
 
             if (show) {
                 if (board.boardGrid[i][j].ship) {
@@ -92,11 +93,31 @@ renderBoard(cpuBoardEl, cpu.gameboard, false);
 boardsContainerEl.appendChild(p1BoardEl);
 boardsContainerEl.appendChild(cpuBoardEl);
 
-cpuBoardEl.addEventListener("click", (e) => {
-    const x = Number((e.target as HTMLElement).dataset.x);
-    const y = Number((e.target as HTMLElement).dataset.y);
-    console.log(x, y);
+/* Game Loop */
+let winner: Player;
 
-    p1.attack(cpu.gameboard, x, y);
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const gameLoop = async () => {
+    p1.attackRand(cpu.gameboard);
     renderBoard(cpuBoardEl, cpu.gameboard, false);
-});
+    await delay(100);
+    if (cpu.gameboard.allSunk()) {
+        winner = p1;
+        alert(`${winner.name} won!`);
+        return;
+    }
+
+    setTimeout(() => {}, 1000);
+    cpu.attackRand(p1.gameboard);
+    renderBoard(p1BoardEl, p1.gameboard, true);
+    await delay(100);
+    if (p1.gameboard.allSunk()) {
+        winner = cpu;
+        alert(`${winner.name} won!`);
+        return;
+    }
+
+    gameLoop();
+};
+gameLoop();

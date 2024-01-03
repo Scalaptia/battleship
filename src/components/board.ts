@@ -11,6 +11,7 @@ export const createBoard = (width: number, height: number): Gameboard => {
         ships: [],
         missedShots: 0,
         placeShip(ship, x, y, vertical) {
+            ship = { ...ship };
             this.ships.push(ship);
 
             if (vertical) {
@@ -36,7 +37,7 @@ export const createBoard = (width: number, height: number): Gameboard => {
             return true;
         },
         receiveAttack(x, y) {
-            const cell = this.boardGrid[y][x];
+            const cell = this.boardGrid[x][y];
 
             if (!cell.hit) {
                 cell.hit = true;
