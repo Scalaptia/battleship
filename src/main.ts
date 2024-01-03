@@ -27,8 +27,9 @@ cpu.gameboard.placeShip(Ships.Submarine, 0, 3, false);
 cpu.gameboard.placeShip(Ships.Destroyer, 0, 4, false);
 
 /* UI */
-const fillBoard = (boardEl: HTMLElement, board: Gameboard, show: boolean) => {
-    boardEl.innerHTML = "";
+const renderBoard = (boardEl: HTMLElement, board: Gameboard, show: boolean) => {
+    const boardTop = boardEl.querySelector(".board-top")!;
+    boardTop.innerHTML = "";
 
     for (let i = 0; i < board.boardGrid.length; i++) {
         for (let j = 0; j < board.boardGrid[i].length; j++) {
@@ -56,21 +57,37 @@ const fillBoard = (boardEl: HTMLElement, board: Gameboard, show: boolean) => {
                 }
             }
 
-            boardEl.appendChild(cellEl);
+            boardTop.appendChild(cellEl);
         }
     }
 };
 
+const createBoardElement = (id: string) => {
+    const boardEl = document.createElement("board");
+    boardEl.id = id;
+
+    const boardTop = document.createElement("div");
+    boardTop.classList.add("board-top");
+    boardEl.appendChild(boardTop);
+
+    const boardSide = document.createElement("div");
+    boardSide.classList.add("board-side");
+    boardEl.appendChild(boardSide);
+
+    const boardFront = document.createElement("div");
+    boardFront.classList.add("board-front");
+    boardEl.appendChild(boardFront);
+
+    return boardEl;
+};
+
 const boardsContainerEl = document.getElementById("boards-container")!;
 
-const p1BoardEl = document.createElement("board");
-p1BoardEl.id = "p1-board";
+const p1BoardEl = createBoardElement("p1-board");
+const cpuBoardEl = createBoardElement("cpu-board");
 
-const cpuBoardEl = document.createElement("board");
-cpuBoardEl.id = "cpu-board";
-
-fillBoard(p1BoardEl, p1.gameboard, true);
-fillBoard(cpuBoardEl, cpu.gameboard, false);
+renderBoard(p1BoardEl, p1.gameboard, true);
+renderBoard(cpuBoardEl, cpu.gameboard, false);
 
 boardsContainerEl.appendChild(p1BoardEl);
 boardsContainerEl.appendChild(cpuBoardEl);
@@ -81,5 +98,5 @@ cpuBoardEl.addEventListener("click", (e) => {
     console.log(x, y);
 
     p1.attack(cpu.gameboard, x, y);
-    fillBoard(cpuBoardEl, cpu.gameboard, false);
+    renderBoard(cpuBoardEl, cpu.gameboard, false);
 });
