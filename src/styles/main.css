@@ -8,7 +8,8 @@ body {
     font-family: "Roboto", sans-serif;
     background-color: #0d213344;
     color: white;
-    height: 100vh;
+    height: 100svh;
+    width: 100svw;
     display: grid;
     justify-content: center;
     align-content: center;
@@ -19,37 +20,87 @@ body {
 #boards-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8rem;
-    transform: rotateX(45deg) rotateZ(30deg);
+    gap: 10vw;
+
     /* transform: rotate(30deg) skew(-30deg); */
 }
 
 board {
     display: grid;
-    grid-template-columns: 5fr 1fr;
+    grid-template-columns: 1fr 1fr;
+    width: 25vw;
+    transition: transform 0.5s ease;
 }
 
 .board-top {
-    width: 25vw;
-    height: 25vw;
-
     display: grid;
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(10, 1fr);
 
     background-image: url(/water.gif);
     background-size: cover;
+    z-index: 1;
+}
+
+@keyframes rotateSide {
+    0% {
+        transform: translateX(-100%);
+    }
+    50% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(0%) skewY(60deg);
+    }
+}
+
+@keyframes rotateFront {
+    0% {
+        transform: translateY(-100%);
+    }
+    50% {
+        transform: translateY(0%);
+    }
+    100% {
+        transform: skewX(30deg);
+    }
+}
+
+@keyframes rotateSideReverse {
+    0% {
+        transform: translateX(0%) skewY(60deg);
+    }
+    50% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes rotateFrontReverse {
+    0% {
+        transform: skewX(30deg);
+    }
+    50% {
+        transform: translateY(0%);
+    }
+    100% {
+        transform: translateY(-100%);
+    }
 }
 
 .board-side {
     filter: brightness(0.7);
     justify-self: left;
-    width: 2.5vw;
+    width: 2.55vw;
     height: 25vw;
 
     background-image: url(/water.gif);
     background-size: cover;
-    transform: skewY(60deg) rotate(180deg) translateY(-9%);
+
+    transform-origin: left center;
+    animation: rotateSideReverse 0.5s ease forwards;
 }
 
 .board-front {
@@ -59,7 +110,25 @@ board {
 
     background-image: url(/water.gif);
     background-size: cover;
-    transform: skewX(30deg) translateX(5%);
+
+    transform-origin: right top;
+    animation: rotateFrontReverse 0.5s ease forwards;
+}
+
+#boards-container:hover > board {
+    transform: rotateX(45deg) rotateZ(30deg);
+}
+
+#boards-container:hover > board > .board-side {
+    /* transform: skewY(60deg); */
+    animation: rotateSide 0.5s ease forwards;
+    animation-play-state: running;
+}
+
+#boards-container:hover > board > .board-front {
+    /* transform: skewX(30deg); */
+    animation: rotateFront 0.5s ease forwards;
+    animation-play-state: running;
 }
 
 cell {
@@ -83,32 +152,29 @@ cell:hover::after {
     background: rgba(0, 0, 0, 0.5); /* adjust transparency as needed */
 }
 
+/* Mobile */
+
 @media (max-width: 800px) {
     #boards-container {
         grid-template-columns: 1fr;
-        width: 50vw;
-        height: 200vw;
+        gap: 10svh;
     }
 
-    #p1-board {
-        transform: translateX(-25%) translateY(50%) scale(1.5);
-    }
-
-    #cpu-board {
-        transform: translateX(75%) translateY(25%) scale(1.5);
-    }
-
-    .board-top {
-        width: 100%;
-        height: 100%;
+    board {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 65vw;
+        height: 65vw;
     }
 
     .board-side {
-        height: 100%;
+        width: 7.25vw;
+        height: 65vw;
     }
 
     .board-front {
-        width: 100%;
+        width: 65vw;
+        height: 12.5vw;
     }
 }
 
