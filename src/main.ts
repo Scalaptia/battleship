@@ -1,7 +1,6 @@
 import "./styles/main.css";
 import { createPlayer } from "./components/player";
 import { createShip } from "./components/ships";
-import { Player } from "./";
 import { Gameboard } from "./";
 
 const Ships = {
@@ -94,27 +93,48 @@ boardsContainerEl.appendChild(p1BoardEl);
 boardsContainerEl.appendChild(cpuBoardEl);
 
 /* Game Loop */
-let winner: Player;
-
+const headerEl = document.getElementById("header")!;
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const playerTurn = () => {
+    return new Promise((resolve): void => {
+        const boardTop = cpuBoardEl.querySelector(".board-top")!;
+
+        boardTop.addEventListener("click", function attack(e) {
+            const cellEl = e.target as HTMLElement;
+            const x = parseInt(cellEl.dataset.x!);
+            const y = parseInt(cellEl.dataset.y!);
+
+            if (cpu.gameboard.boardGrid[x][y].hit) {
+                return;
+            }
+
+            cpu.gameboard.receiveAttack(x, y);
+            renderBoard(cpuBoardEl, cpu.gameboard, false);
+            boardTop.removeEventListener("click", attack);
+            resolve(() => {});
+        });
+    });
+};
 
 const gameLoop = async () => {
-    p1.attackRand(cpu.gameboard);
+    // Player's turn
+    headerEl.textContent = `${p1.name}'s turn`;
+
+    await playerTurn();
+
     renderBoard(cpuBoardEl, cpu.gameboard, false);
-    await delay(100);
     if (cpu.gameboard.allSunk()) {
-        winner = p1;
-        alert(`${winner.name} won!`);
+        headerEl.textContent = `${p1.name} won!`;
         return;
     }
 
-    setTimeout(() => {}, 1000);
+    // CPU's turn
+    headerEl.textContent = `${cpu.name}'s turn`;
+    await delay(1000);
     cpu.attackRand(p1.gameboard);
     renderBoard(p1BoardEl, p1.gameboard, true);
-    await delay(100);
     if (p1.gameboard.allSunk()) {
-        winner = cpu;
-        alert(`${winner.name} won!`);
+        headerEl.textContent = `${cpu.name} won!`;
         return;
     }
 

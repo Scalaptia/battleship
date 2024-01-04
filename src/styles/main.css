@@ -193,17 +193,17 @@ cell:hover::before {
     board {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        width: 65vw;
-        height: 65vw;
+        width: 60vw;
+        height: 60vw;
     }
 
     .board-side {
         width: 7.25vw;
-        height: 65vw;
+        height: 60vw;
     }
 
     .board-front {
-        width: 65vw;
+        width: 60vw;
         height: 12.5vw;
     }
 }
