@@ -90,16 +90,20 @@ const playButtonEl = document.querySelector(".play-btn")!;
 
 /* Append ships name and element to shipsEl */
 for (const ship in Ships) {
-    const shipEl = document.createElement("ship");
-    shipEl.textContent = ship;
-    shipEl.classList.add(ship.toLowerCase());
-    shipsEl.appendChild(shipEl);
+    const shipObj = Ships[ship as keyof typeof Ships];
+
+    const shipEl = document.createElement("div");
+    shipEl.classList.add("ui-ship");
+    shipEl.draggable = true;
 
     // Create ship cells and append to shipEl
-    for (let i = 0; i < ship.length; i++) {
+    for (let i = 0; i < shipObj.length; i++) {
         const cellEl = document.createElement("cell");
+        cellEl.classList.add("ship");
         shipEl.appendChild(cellEl);
     }
+
+    shipsEl.appendChild(shipEl);
 }
 
 const startGame = async () => {
@@ -112,54 +116,7 @@ const startGame = async () => {
 
 playButtonEl.addEventListener("click", startGame);
 
-const placeShips = () => {
-    const boardTop = p1BoardEl.querySelector(".board-top")!;
-    const shipsEl = document.getElementById("ships")!;
-    const ships = shipsEl.querySelectorAll("ship");
-
-    console.log(ships);
-
-    let shipIndex = 0;
-    let ship: Ship;
-    let shipEl: HTMLElement;
-
-    ships.forEach((el) => {
-        const shipEl = el as HTMLElement;
-        shipEl.dataset.index = `${shipIndex++}`;
-
-        shipEl.addEventListener("click", function selectShip(e) {
-            const shipEl = e.target as HTMLElement;
-            ship = Ships[shipEl.textContent! as keyof typeof Ships];
-
-            if (shipIndex == ships.length) {
-                return;
-            }
-
-            shipEl.classList.remove("selected");
-            shipIndex = ships.length;
-            console.log(shipIndex);
-
-            shipEl.removeEventListener("click", selectShip);
-            console.log(ship);
-        });
-    });
-
-    boardTop.addEventListener("click", function placeShip(e) {
-        if (ship) {
-            const cellEl = e.target as HTMLElement;
-            const x = parseInt(cellEl.dataset.x!);
-            const y = parseInt(cellEl.dataset.y!);
-
-            if (p1.gameboard.placeShip(ship, x, y, true)) {
-                renderBoard(p1BoardEl, p1.gameboard, true);
-                shipEl.classList.add("placed");
-                shipEl = ships[++shipIndex] as HTMLElement;
-                ship = Ships[shipEl.textContent! as keyof typeof Ships];
-                shipEl.removeEventListener("click", function selectShip() {});
-            }
-        }
-    });
-};
+const placeShips = () => {};
 placeShips();
 
 /* Game Loop */

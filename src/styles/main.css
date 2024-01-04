@@ -11,10 +11,6 @@
     display: none;
 }
 
-#ships-container.hidden {
-    display: none;
-}
-
 body {
     margin: 0;
     padding: 0;
@@ -47,27 +43,11 @@ header {
     gap: 5rem;
 }
 
-#ships-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-}
-
 /* UI */
-#ships {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 2rem;
-    height: 100%;
-}
 
 .play-btn {
     font-size: 1.2rem;
-    padding: 0.5rem 1rem;
+    padding: 0.25rem;
     border: 1px solid white;
     border-radius: 5px;
     background-color: transparent;
@@ -111,4 +91,23 @@ cell::after {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+@media (max-width: 800px) {
+    body {
+        justify-content: start;
+        margin-top: 5svh;
+    }
+
+    #game-container {
+        flex-direction: column;
+    }
+
+    #ships-container {
+        order: 2;
+    }
+
+    #boards-container {
+        order: 1;
+    }
 }
