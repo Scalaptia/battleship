@@ -37,13 +37,14 @@ export const createBoard = (width: number, height: number): Gameboard => {
             return true;
         },
         receiveAttack(x, y) {
-            const cell = this.boardGrid[x][y];
+            const cell = this.boardGrid[y][x];
 
             if (!cell.hit) {
                 cell.hit = true;
 
                 if (cell.ship) {
                     cell.ship.hit();
+                    console.log(cell.ship);
                 } else {
                     this.missedShots++;
                 }

@@ -1,7 +1,10 @@
 import "./styles/main.css";
+import "./styles/boards.css";
+import "./styles/ships.css";
 import { createPlayer } from "./components/player";
 import { createShip } from "./components/ships";
 import { Gameboard } from "./";
+import { Ship } from "./";
 
 const Ships = {
     Carrier: createShip(5),
@@ -11,21 +14,6 @@ const Ships = {
     Destroyer: createShip(2),
 };
 
-const p1 = createPlayer("Player 1");
-const cpu = createPlayer("CPU");
-
-p1.gameboard.placeShip(Ships.Carrier, 0, 0, false);
-p1.gameboard.placeShip(Ships.Battleship, 0, 1, false);
-p1.gameboard.placeShip(Ships.Cruiser, 0, 2, false);
-p1.gameboard.placeShip(Ships.Submarine, 0, 3, false);
-p1.gameboard.placeShip(Ships.Destroyer, 0, 4, false);
-
-cpu.gameboard.placeShip(Ships.Carrier, 0, 0, false);
-cpu.gameboard.placeShip(Ships.Battleship, 0, 1, false);
-cpu.gameboard.placeShip(Ships.Cruiser, 0, 2, false);
-cpu.gameboard.placeShip(Ships.Submarine, 0, 3, false);
-cpu.gameboard.placeShip(Ships.Destroyer, 0, 4, false);
-
 /* UI */
 const renderBoard = (boardEl: HTMLElement, board: Gameboard, show: boolean) => {
     const boardTop = boardEl.querySelector(".board-top")!;
@@ -34,8 +22,8 @@ const renderBoard = (boardEl: HTMLElement, board: Gameboard, show: boolean) => {
     for (let i = 0; i < board.boardGrid.length; i++) {
         for (let j = 0; j < board.boardGrid[i].length; j++) {
             const cellEl = document.createElement("cell");
-            cellEl.dataset.x = `${i}`;
-            cellEl.dataset.y = `${j}`;
+            cellEl.dataset.y = `${i}`;
+            cellEl.dataset.x = `${j}`;
 
             if (show) {
                 if (board.boardGrid[i][j].ship) {
@@ -81,18 +69,101 @@ const createBoardElement = (id: string) => {
     return boardEl;
 };
 
+/* Create players */
 const boardsContainerEl = document.getElementById("boards-container")!;
 
 const p1BoardEl = createBoardElement("p1-board");
-const cpuBoardEl = createBoardElement("cpu-board");
-
+boardsContainerEl.appendChild(p1BoardEl);
+const p1 = createPlayer("Player 1");
 renderBoard(p1BoardEl, p1.gameboard, true);
+
+const cpuBoardEl = createBoardElement("cpu-board");
+cpuBoardEl.classList.toggle("hidden");
+boardsContainerEl.appendChild(cpuBoardEl);
+const cpu = createPlayer("CPU");
 renderBoard(cpuBoardEl, cpu.gameboard, false);
 
-boardsContainerEl.appendChild(p1BoardEl);
-boardsContainerEl.appendChild(cpuBoardEl);
+/* Place ships scene */
+const shipsContainerEl = document.getElementById("ships-container")!;
+const shipsEl = document.getElementById("ships")!;
+const playButtonEl = document.querySelector(".play-btn")!;
+
+/* Append ships name and element to shipsEl */
+for (const ship in Ships) {
+    const shipEl = document.createElement("ship");
+    shipEl.textContent = ship;
+    shipEl.classList.add(ship.toLowerCase());
+    shipsEl.appendChild(shipEl);
+
+    // Create ship cells and append to shipEl
+    for (let i = 0; i < ship.length; i++) {
+        const cellEl = document.createElement("cell");
+        shipEl.appendChild(cellEl);
+    }
+}
+
+const startGame = async () => {
+    shipsContainerEl.classList.add("hidden");
+    cpuBoardEl.classList.remove("hidden");
+    boardsContainerEl.classList.add("isometric");
+
+    gameLoop();
+};
+
+playButtonEl.addEventListener("click", startGame);
+
+const placeShips = () => {
+    const boardTop = p1BoardEl.querySelector(".board-top")!;
+    const shipsEl = document.getElementById("ships")!;
+    const ships = shipsEl.querySelectorAll("ship");
+
+    console.log(ships);
+
+    let shipIndex = 0;
+    let ship: Ship;
+    let shipEl: HTMLElement;
+
+    ships.forEach((el) => {
+        const shipEl = el as HTMLElement;
+        shipEl.dataset.index = `${shipIndex++}`;
+
+        shipEl.addEventListener("click", function selectShip(e) {
+            const shipEl = e.target as HTMLElement;
+            ship = Ships[shipEl.textContent! as keyof typeof Ships];
+
+            if (shipIndex == ships.length) {
+                return;
+            }
+
+            shipEl.classList.remove("selected");
+            shipIndex = ships.length;
+            console.log(shipIndex);
+
+            shipEl.removeEventListener("click", selectShip);
+            console.log(ship);
+        });
+    });
+
+    boardTop.addEventListener("click", function placeShip(e) {
+        if (ship) {
+            const cellEl = e.target as HTMLElement;
+            const x = parseInt(cellEl.dataset.x!);
+            const y = parseInt(cellEl.dataset.y!);
+
+            if (p1.gameboard.placeShip(ship, x, y, true)) {
+                renderBoard(p1BoardEl, p1.gameboard, true);
+                shipEl.classList.add("placed");
+                shipEl = ships[++shipIndex] as HTMLElement;
+                ship = Ships[shipEl.textContent! as keyof typeof Ships];
+                shipEl.removeEventListener("click", function selectShip() {});
+            }
+        }
+    });
+};
+placeShips();
 
 /* Game Loop */
+
 const headerEl = document.getElementById("header")!;
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const playerTurn = () => {
@@ -140,4 +211,3 @@ const gameLoop = async () => {
 
     gameLoop();
 };
-gameLoop();

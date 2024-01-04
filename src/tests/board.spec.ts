@@ -74,12 +74,13 @@ describe("allSunk", () => {
     it("should return true if all ships are sunk", () => {
         const board = createBoard(10, 10);
 
-        board.placeShip(createShip(1), 0, 0, true);
+        board.placeShip(createShip(2), 0, 0, true);
         board.placeShip(createShip(2), 1, 0, false);
 
         board.receiveAttack(0, 0);
         board.receiveAttack(0, 1);
-        board.receiveAttack(0, 2);
+        board.receiveAttack(1, 0);
+        board.receiveAttack(2, 0);
 
         expect(board.allSunk()).toBe(true);
     });

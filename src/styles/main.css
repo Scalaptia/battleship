@@ -7,6 +7,14 @@
     color-scheme: dark light;
 }
 
+.hidden {
+    display: none;
+}
+
+#ships-container.hidden {
+    display: none;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -30,127 +38,53 @@ header {
     height: 10vh;
 }
 
-/* Gameboard */
-
-#boards-container {
-    width: 80svw;
-    align-self: center;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+/* Game container */
+#game-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 5rem;
 }
 
-board {
-    justify-self: center;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    width: 25vw;
-    transition: transform 0.5s ease;
+#ships-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
 }
 
-.board-top {
-    display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    grid-template-rows: repeat(10, 1fr);
+/* UI */
+#ships {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    height: 100%;
+}
+
+.play-btn {
+    font-size: 1.2rem;
+    padding: 0.5rem 1rem;
     border: 1px solid white;
-
-    background-image: url(/water.gif);
-    background-size: cover;
-    z-index: 1;
+    border-radius: 5px;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
-@keyframes rotateSide {
-    0% {
-        transform: translateX(-100%);
-    }
-    50% {
-        transform: translateX(0%);
-    }
-    100% {
-        transform: translateX(0%) skewY(60deg);
-    }
+.play-btn:hover {
+    background-color: #2e579d;
 }
 
-@keyframes rotateFront {
-    0% {
-        transform: translateY(-100%);
-    }
-    50% {
-        transform: translateY(0%);
-    }
-    100% {
-        transform: skewX(30deg);
-    }
-}
-
-@keyframes rotateSideReverse {
-    0% {
-        transform: translateX(0%) skewY(60deg);
-    }
-    50% {
-        transform: translateX(0%);
-    }
-    100% {
-        transform: translateX(-100%);
-    }
-}
-
-@keyframes rotateFrontReverse {
-    0% {
-        transform: skewX(30deg);
-    }
-    50% {
-        transform: translateY(0%);
-    }
-    100% {
-        transform: translateY(-100%);
-    }
-}
-
-.board-side {
-    filter: brightness(0.7);
-    justify-self: left;
-    width: 2.55vw;
-    height: 25vw;
-
-    background-image: url(/water.gif);
-    background-size: cover;
-
-    transform-origin: left center;
-    animation: rotateSideReverse 0.5s ease forwards;
-}
-
-.board-front {
-    filter: brightness(0.5);
-    width: 25vw;
-    height: 4.5vw;
-
-    background-image: url(/water.gif);
-    background-size: cover;
-
-    transform-origin: right top;
-    animation: rotateFrontReverse 0.5s ease forwards;
-}
-
-#boards-container:hover > board {
-    transform: rotateX(45deg) rotateZ(30deg);
-}
-
-#boards-container:hover > board > .board-side {
-    /* transform: skewY(60deg); */
-    animation: rotateSide 0.5s ease forwards;
-    animation-play-state: running;
-}
-
-#boards-container:hover > board > .board-front {
-    /* transform: skewX(30deg); */
-    animation: rotateFront 0.5s ease forwards;
-    animation-play-state: running;
-}
+/* Cells */
 
 cell {
     position: relative;
     border: 1px solid white;
-    /* background-color: rgb(58, 137, 218); */
 }
 
 cell::after {
@@ -166,80 +100,11 @@ cell::after {
     transition: background 0s ease;
 }
 
-/* .board-top.select > cell:hover::after {
-    background: rgba(0, 0, 0, 0.5);
-} */
-
-cell:hover::before {
+/* .board-top.select > */
+.board-top > cell:hover::before {
     content: "";
     position: absolute;
     background: rgba(0, 0, 0, 0.5);
-    border-radius: 50%;
-    height: 90%;
-    width: 90%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-/* Mobile */
-
-@media (max-width: 800px) {
-    #boards-container {
-        grid-template-columns: 1fr;
-        gap: 10svh;
-    }
-
-    board {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        width: 60vw;
-        height: 60vw;
-    }
-
-    .board-side {
-        width: 7.25vw;
-        height: 60vw;
-    }
-
-    .board-front {
-        width: 60vw;
-        height: 12.5vw;
-    }
-}
-
-/* Ships */
-
-.ship {
-    background-image: none;
-    background-color: rgb(112, 112, 112);
-}
-
-.miss::after {
-    background-image: none;
-    background-color: rgb(13, 33, 51);
-    border-radius: 50%;
-    height: 90%;
-    width: 90%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.hit::after {
-    background-image: none;
-    background-color: red;
-    border-radius: 50%;
-    height: 90%;
-    width: 90%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.sunk::after {
-    background-image: none;
-    background-color: hsl(125, 60%, 48%);
     border-radius: 50%;
     height: 90%;
     width: 90%;

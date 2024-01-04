@@ -7,9 +7,16 @@
         <title>Battleship</title>
     </head>
     <body>
-        <header id="header">Your turn / Opponents turn</header>
+        <header id="header">Place your ships</header>
 
-        <div id="boards-container"></div>
+        <div id="game-container">
+            <div id="ships-container">
+                <div id="ships"></div>
+                <div id="ships-rotate"></div>
+                <button class="play-btn">Play</button>
+            </div>
+            <div id="boards-container"></div>
+        </div>
 
         <script type="module" src="/src/main.ts"></script>
     </body>
