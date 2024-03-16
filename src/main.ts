@@ -4,7 +4,6 @@ import "./styles/ships.css";
 import { createPlayer } from "./components/player";
 import { createShip } from "./components/ships";
 import { Gameboard } from "./";
-import { Ship } from "./";
 
 const Ships = {
     Carrier: createShip(5),
@@ -24,6 +23,38 @@ const renderBoard = (boardEl: HTMLElement, board: Gameboard, show: boolean) => {
             const cellEl = document.createElement("cell");
             cellEl.dataset.y = `${i}`;
             cellEl.dataset.x = `${j}`;
+
+            // Add dragover and drop event listeners
+            cellEl.addEventListener("dragover", (event) => {
+                event.preventDefault();
+            });
+
+            cellEl.addEventListener("drop", (event) => {
+                event.preventDefault();
+                const ship = event.dataTransfer!.getData("text");
+                const target = event.target as HTMLElement;
+                const x = parseInt(target.dataset.x!);
+                const y = parseInt(target.dataset.y!);
+
+                console.log(ship, x, y);
+                // Try to place the ship
+                if (
+                    board.placeShip(
+                        Ships[ship as keyof typeof Ships],
+                        x,
+                        y,
+                        false
+                    )
+                ) {
+                    renderBoard(boardEl, board, true);
+                } else {
+                    // If the ship cannot be placed, show an error message and stop the drop operation
+                    alert(
+                        "Cannot place ship here. Please try a different location."
+                    );
+                    return;
+                }
+            });
 
             if (show) {
                 if (board.boardGrid[i][j].ship) {
@@ -94,7 +125,14 @@ for (const ship in Ships) {
 
     const shipEl = document.createElement("div");
     shipEl.classList.add("ui-ship");
+    shipEl.dataset.ship = ship;
+
+    // Make ship draggable and set data
     shipEl.draggable = true;
+    shipEl.addEventListener("dragstart", (event) => {
+        event.dataTransfer!.setData("text/plain", ship);
+        shipEl.style.opacity = "0.4"; // Add visual indicator
+    });
 
     // Create ship cells and append to shipEl
     for (let i = 0; i < shipObj.length; i++) {

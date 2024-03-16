@@ -29,6 +29,14 @@ describe("placeShip", () => {
 
         expect(board.ships.length).toBe(1);
     });
+
+    it("should not add the ship if it goes out of bounds", () => {
+        const board = createBoard(9, 9);
+
+        board.placeShip(createShip(3), 8, 9, false);
+
+        expect(board.ships.length).toBe(0);
+    });
 });
 
 describe("receiveAttack", () => {

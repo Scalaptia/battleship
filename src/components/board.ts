@@ -15,6 +15,10 @@ export const createBoard = (width: number, height: number): Gameboard => {
             this.ships.push(ship);
 
             if (vertical) {
+                if (y + ship.length > this.boardGrid.length) {
+                    this.ships.pop();
+                    return false;
+                }
                 for (let i = 0; i < ship.length; i++) {
                     if (this.boardGrid[y + i][x].ship) {
                         this.ships.pop();
@@ -24,6 +28,10 @@ export const createBoard = (width: number, height: number): Gameboard => {
                     this.boardGrid[y + i][x].ship = ship;
                 }
             } else {
+                if (x + ship.length > this.boardGrid[0].length) {
+                    this.ships.pop();
+                    return false;
+                }
                 for (let i = 0; i < ship.length; i++) {
                     if (this.boardGrid[y][x + i].ship) {
                         this.ships.pop();
