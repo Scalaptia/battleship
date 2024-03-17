@@ -15,19 +15,22 @@
 #ships {
     display: grid;
     grid-template-columns: 1fr;
+    width: 15vw;
 
     gap: 1.5rem;
     height: 100%;
 }
 
 .ui-ship {
-    justify-self: ce;
+    justify-self: center;
     display: flex;
 }
 
 .ui-ship > cell {
     min-height: 2.3vw;
     min-width: 2.3vw;
+    max-height: 2.3vw;
+    max-width: 2.3vw;
 }
 
 @media (max-width: 800px) {

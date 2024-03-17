@@ -16,7 +16,7 @@ export type Gameboard = {
     ships: Ship[];
     missedShots: number;
     placeShip(ship: Ship, x: number, y: number, vertical: boolean): boolean;
-    receiveAttack(x: number, y: number): void;
+    receiveAttack(y: number, x: number): void;
     allSunk(): boolean;
     addRandomShip(ship: Ship): void;
     addRandomShips(): void;

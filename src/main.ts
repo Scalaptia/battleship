@@ -138,7 +138,6 @@ for (const ship in Ships) {
     shipEl.draggable = true;
     shipEl.addEventListener("dragstart", (event) => {
         event.dataTransfer!.setData("text/plain", ship);
-        shipEl.style.opacity = "0.4"; // Add visual indicator
     });
 
     // Create ship cells and append to shipEl
@@ -161,9 +160,6 @@ const startGame = async () => {
 
 playButtonEl.addEventListener("click", startGame);
 
-const placeShips = () => {};
-placeShips();
-
 /* Game Loop */
 
 const headerEl = document.getElementById("header")!;
@@ -177,11 +173,11 @@ const playerTurn = () => {
             const x = parseInt(cellEl.dataset.x!);
             const y = parseInt(cellEl.dataset.y!);
 
-            if (cpu.gameboard.boardGrid[x][y].hit) {
+            if (cpu.gameboard.boardGrid[y][x].hit) {
                 return;
             }
 
-            cpu.gameboard.receiveAttack(x, y);
+            cpu.gameboard.receiveAttack(y, x);
             renderBoard(cpuBoardEl, cpu.gameboard, false);
             boardTop.removeEventListener("click", attack);
             resolve(() => {});
@@ -191,6 +187,7 @@ const playerTurn = () => {
 
 const gameLoop = async () => {
     // Player's turn
+    headerEl.style.color = "white";
     headerEl.textContent = `${p1.name}'s turn`;
 
     await playerTurn();
@@ -198,6 +195,7 @@ const gameLoop = async () => {
     renderBoard(cpuBoardEl, cpu.gameboard, false);
     if (cpu.gameboard.allSunk()) {
         headerEl.textContent = `${p1.name} won!`;
+        headerEl.style.color = "green";
         return;
     }
 
@@ -208,6 +206,7 @@ const gameLoop = async () => {
     renderBoard(p1BoardEl, p1.gameboard, true);
     if (p1.gameboard.allSunk()) {
         headerEl.textContent = `${cpu.name} won!`;
+        headerEl.style.color = "red";
         return;
     }
 

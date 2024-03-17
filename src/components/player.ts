@@ -14,9 +14,9 @@ export const createPlayer = (name: string): Player => {
             do {
                 x = Math.floor(Math.random() * 10);
                 y = Math.floor(Math.random() * 10);
-            } while (opponent.boardGrid[x][y].hit);
+            } while (opponent.boardGrid[y][x].hit);
 
-            opponent.receiveAttack(x, y);
+            opponent.receiveAttack(y, x);
         },
     };
 

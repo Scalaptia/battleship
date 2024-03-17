@@ -45,7 +45,7 @@ export const createBoard = (width: number, height: number): Gameboard => {
 
             return true;
         },
-        receiveAttack(x, y) {
+        receiveAttack(y, x) {
             const cell = this.boardGrid[y][x];
 
             if (!cell.hit) {
@@ -68,6 +68,7 @@ export const createBoard = (width: number, height: number): Gameboard => {
                 let x = Math.floor(Math.random() * this.boardGrid[0].length);
                 let y = Math.floor(Math.random() * this.boardGrid.length);
                 let vertical = Math.random() < 0.5;
+
                 placed = this.placeShip(ship, x, y, vertical);
             }
         },

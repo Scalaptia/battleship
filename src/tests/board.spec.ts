@@ -86,9 +86,9 @@ describe("allSunk", () => {
         board.placeShip(createShip(2), 1, 0, false);
 
         board.receiveAttack(0, 0);
-        board.receiveAttack(0, 1);
         board.receiveAttack(1, 0);
-        board.receiveAttack(2, 0);
+        board.receiveAttack(0, 1);
+        board.receiveAttack(0, 2);
 
         expect(board.allSunk()).toBe(true);
     });
