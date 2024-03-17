@@ -18,6 +18,8 @@ export type Gameboard = {
     placeShip(ship: Ship, x: number, y: number, vertical: boolean): boolean;
     receiveAttack(x: number, y: number): void;
     allSunk(): boolean;
+    addRandomShip(ship: Ship): void;
+    addRandomShips(): void;
 };
 
 export type Player = {

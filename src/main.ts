@@ -47,6 +47,12 @@ const renderBoard = (boardEl: HTMLElement, board: Gameboard, show: boolean) => {
                     )
                 ) {
                     renderBoard(boardEl, board, true);
+                    // Remove the ship from the ships container
+                    const shipEl = document.querySelector(
+                        `[data-ship="${ship}"]`
+                    ) as HTMLElement;
+                    shipEl.draggable = false;
+                    shipEl.remove();
                 } else {
                     // If the ship cannot be placed, show an error message and stop the drop operation
                     alert(
@@ -112,6 +118,7 @@ const cpuBoardEl = createBoardElement("cpu-board");
 cpuBoardEl.classList.toggle("hidden");
 boardsContainerEl.appendChild(cpuBoardEl);
 const cpu = createPlayer("CPU");
+cpu.gameboard.addRandomShips();
 renderBoard(cpuBoardEl, cpu.gameboard, false);
 
 /* Place ships scene */

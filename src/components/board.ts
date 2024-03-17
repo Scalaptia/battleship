@@ -1,4 +1,5 @@
 import { Gameboard } from "..";
+import { createShip } from "./ships.ts";
 
 export const createBoard = (width: number, height: number): Gameboard => {
     let board: Gameboard = {
@@ -60,6 +61,22 @@ export const createBoard = (width: number, height: number): Gameboard => {
         },
         allSunk() {
             return this.ships.every((ship) => ship.sunk);
+        },
+        addRandomShip(ship) {
+            let placed = false;
+            while (!placed) {
+                let x = Math.floor(Math.random() * this.boardGrid[0].length);
+                let y = Math.floor(Math.random() * this.boardGrid.length);
+                let vertical = Math.random() < 0.5;
+                placed = this.placeShip(ship, x, y, vertical);
+            }
+        },
+        addRandomShips() {
+            this.addRandomShip(createShip(5));
+            this.addRandomShip(createShip(4));
+            this.addRandomShip(createShip(3));
+            this.addRandomShip(createShip(3));
+            this.addRandomShip(createShip(2));
         },
     };
 
