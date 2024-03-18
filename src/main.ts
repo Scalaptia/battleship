@@ -4,6 +4,7 @@ import "./styles/ships.css";
 import { createPlayer } from "./components/player";
 import { createShip } from "./components/ships";
 import { Gameboard } from "./";
+import { createBoard } from "./components/board";
 
 const Ships = {
     Carrier: createShip(5),
@@ -35,15 +36,19 @@ const renderBoard = (boardEl: HTMLElement, board: Gameboard, show: boolean) => {
                 const target = event.target as HTMLElement;
                 const x = parseInt(target.dataset.x!);
                 const y = parseInt(target.dataset.y!);
+                const shipEl = document.querySelector(
+                    `[data-ship="${ship}"]`
+                ) as HTMLElement;
+                const vertical = shipEl.classList.contains("vertical");
 
-                console.log(ship, x, y);
+                console.log(ship, x, y, vertical);
                 // Try to place the ship
                 if (
                     board.placeShip(
                         Ships[ship as keyof typeof Ships],
                         x,
                         y,
-                        false
+                        vertical
                     )
                 ) {
                     renderBoard(boardEl, board, true);
@@ -53,12 +58,6 @@ const renderBoard = (boardEl: HTMLElement, board: Gameboard, show: boolean) => {
                     ) as HTMLElement;
                     shipEl.draggable = false;
                     shipEl.remove();
-                } else {
-                    // If the ship cannot be placed, show an error message and stop the drop operation
-                    alert(
-                        "Cannot place ship here. Please try a different location."
-                    );
-                    return;
                 }
             });
 
@@ -125,40 +124,96 @@ renderBoard(cpuBoardEl, cpu.gameboard, false);
 const shipsContainerEl = document.getElementById("ships-container")!;
 const shipsEl = document.getElementById("ships")!;
 const playButtonEl = document.querySelector(".play-btn")!;
+const resetButtonEl = document.querySelector(".reset-btn")!;
 
-/* Append ships name and element to shipsEl */
-for (const ship in Ships) {
-    const shipObj = Ships[ship as keyof typeof Ships];
+const generateShipsUI = () => {
+    for (const ship in Ships) {
+        const shipObj = Ships[ship as keyof typeof Ships];
 
-    const shipEl = document.createElement("div");
-    shipEl.classList.add("ui-ship");
-    shipEl.dataset.ship = ship;
+        const shipEl = document.createElement("div");
+        shipEl.classList.add("ui-ship");
+        shipEl.dataset.ship = ship;
 
-    // Make ship draggable and set data
-    shipEl.draggable = true;
-    shipEl.addEventListener("dragstart", (event) => {
-        event.dataTransfer!.setData("text/plain", ship);
-    });
+        // Make ship rotate on click
+        shipEl.addEventListener("click", () => {
+            shipEl.classList.toggle("vertical");
+        });
 
-    // Create ship cells and append to shipEl
-    for (let i = 0; i < shipObj.length; i++) {
-        const cellEl = document.createElement("cell");
-        cellEl.classList.add("ship");
-        shipEl.appendChild(cellEl);
+        // Make ship draggable and set data
+        shipEl.draggable = true;
+        shipEl.addEventListener("dragstart", (event) => {
+            event.dataTransfer!.setData("text", ship);
+        });
+
+        // Create ship cells and append to shipEl
+        for (let i = 0; i < shipObj.length; i++) {
+            const cellEl = document.createElement("cell");
+            cellEl.classList.add("ship");
+            shipEl.appendChild(cellEl);
+        }
+
+        shipsEl.appendChild(shipEl);
     }
+};
 
-    shipsEl.appendChild(shipEl);
-}
+generateShipsUI();
 
 const startGame = async () => {
     shipsContainerEl.classList.add("hidden");
     cpuBoardEl.classList.remove("hidden");
     boardsContainerEl.classList.add("isometric");
 
-    gameLoop();
+    await gameLoop();
+
+    // Remove isometric view
+    boardsContainerEl.classList.remove("isometric");
+
+    // Show a modal with the winner and a reset button
+    const modal = document.createElement("div");
+    modal.classList.add("modal");
+    modal.innerHTML = `
+        <div class="modal-content">
+            <h2>${headerEl.textContent}</h2>
+            <button class="reset-btn" style="width: 100%;">Play again</button>
+        </div>
+    `;
+
+    modal.querySelector(".reset-btn")!.addEventListener("click", () => {
+        resetGame();
+        modal.remove();
+    });
+    document.body.appendChild(modal);
 };
 
-playButtonEl.addEventListener("click", startGame);
+playButtonEl.addEventListener("click", () => {
+    if (p1.gameboard.ships.length >= 5) {
+        startGame();
+    }
+});
+
+const resetGame = () => {
+    p1.gameboard = createBoard(10, 10);
+    cpu.gameboard = createBoard(10, 10);
+    cpu.gameboard.addRandomShips();
+
+    // Add ships back to the ships container
+    shipsEl.innerHTML = "";
+    generateShipsUI();
+
+    renderBoard(p1BoardEl, p1.gameboard, true);
+    renderBoard(cpuBoardEl, cpu.gameboard, false);
+
+    shipsContainerEl.classList.remove("hidden");
+    cpuBoardEl.classList.add("hidden");
+
+    boardsContainerEl.classList.remove("isometric");
+    headerEl.textContent = "Place your ships";
+    headerEl.style.color = "white";
+};
+
+resetButtonEl.addEventListener("click", () => {
+    resetGame();
+});
 
 /* Game Loop */
 
@@ -195,7 +250,7 @@ const gameLoop = async () => {
     renderBoard(cpuBoardEl, cpu.gameboard, false);
     if (cpu.gameboard.allSunk()) {
         headerEl.textContent = `${p1.name} won!`;
-        headerEl.style.color = "green";
+        headerEl.style.color = "hsl(125, 60%, 48%)";
         return;
     }
 
@@ -210,5 +265,5 @@ const gameLoop = async () => {
         return;
     }
 
-    gameLoop();
+    await gameLoop();
 };

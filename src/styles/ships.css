@@ -8,17 +8,17 @@
     margin-left: 10svw;
     align-self: start;
     display: grid;
-    height: 20vw;
     gap: 1rem;
 }
 
 #ships {
     display: grid;
-    grid-template-columns: 1fr;
-    width: 15vw;
+    grid-template-columns: 1fr 1fr;
 
+    min-width: 30vw;
     gap: 1.5rem;
     height: 100%;
+    margin-bottom: 3rem;
 }
 
 .ui-ship {
@@ -33,19 +33,27 @@
     max-width: 2.3vw;
 }
 
+.ui-ship.vertical {
+    flex-direction: column;
+}
+
 @media (max-width: 800px) {
     #ships-container {
-        margin-left: 0;
         align-self: center;
+        margin-left: 0;
     }
 
     #ships-container > #ships {
-        grid-template-columns: 1fr 1fr;
+        align-self: center;
+
+        width: 100%;
     }
 
     .ui-ship > cell {
         min-height: 5.7vw;
         min-width: 5.7vw;
+        max-height: 5.7vw;
+        max-width: 5.7vw;
     }
 }
 

@@ -6,6 +6,7 @@
     max-width: min-content;
     grid-template-columns: repeat(2, 1fr);
     gap: 10svw;
+    transform: translateX(2%);
 }
 
 board {
@@ -100,6 +101,10 @@ board {
     animation: rotateFrontReverse 0.5s ease forwards;
 }
 
+#boards-container.isometric {
+    transform: translateX(0%);
+}
+
 #boards-container.isometric > board {
     transform: rotateX(45deg) rotateZ(30deg);
 }
@@ -122,6 +127,7 @@ board {
     #boards-container {
         grid-template-columns: 1fr;
         gap: 10svh;
+        transform: translateX(0%);
     }
 
     board {
