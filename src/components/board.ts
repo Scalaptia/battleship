@@ -15,6 +15,45 @@ export const createBoard = (width: number, height: number): Gameboard => {
             ship = { ...ship };
             this.ships.push(ship);
 
+            const checkAdjacent = (x: number, y: number) => {
+                const directions = [
+                    [-1, 0], // left
+                    [1, 0], // right
+                    [0, -1], // up
+                    [0, 1], // down
+                    [-1, -1], // top-left
+                    [1, -1], // top-right
+                    [-1, 1], // bottom-left
+                    [1, 1], // bottom-right
+                ];
+
+                for (let i = 0; i < directions.length; i++) {
+                    const [dirX, dirY] = directions[i];
+                    const newX = x + dirX;
+                    const newY = y + dirY;
+
+                    if (
+                        newX >= 0 &&
+                        newX < this.boardGrid[0].length &&
+                        newY >= 0 &&
+                        newY < this.boardGrid.length
+                    ) {
+                        if (this.boardGrid[newY][newX].ship) {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            };
+
+            const checkCollision = (x: number, y: number) => {
+                if (this.boardGrid[y][x].ship) {
+                    return true;
+                }
+                return false;
+            };
+
             if (vertical) {
                 // Check wall collision
                 if (y + ship.length > this.boardGrid.length) {
@@ -22,9 +61,9 @@ export const createBoard = (width: number, height: number): Gameboard => {
                     return false;
                 }
 
-                // Check ship collision
+                // Check ship collision and adjacency
                 for (let i = 0; i < ship.length; i++) {
-                    if (this.boardGrid[y + i][x].ship) {
+                    if (checkCollision(x, y + i) || checkAdjacent(x, y + i)) {
                         this.ships.pop();
                         return false;
                     }
@@ -41,9 +80,9 @@ export const createBoard = (width: number, height: number): Gameboard => {
                     return false;
                 }
 
-                // Check ship collision
+                // Check ship collision and adjacency
                 for (let i = 0; i < ship.length; i++) {
-                    if (this.boardGrid[y][x + i].ship) {
+                    if (checkCollision(x + i, y) || checkAdjacent(x + i, y)) {
                         this.ships.pop();
                         return false;
                     }

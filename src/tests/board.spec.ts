@@ -6,7 +6,7 @@ describe("placeShip", () => {
         const board = createBoard(10, 10);
 
         board.placeShip(createShip(3), 0, 0, true);
-        board.placeShip(createShip(3), 1, 0, true);
+        board.placeShip(createShip(3), 2, 0, true);
 
         expect(board.ships.length).toBe(2);
     });
@@ -36,6 +36,32 @@ describe("placeShip", () => {
         board.placeShip(createShip(3), 8, 9, false);
 
         expect(board.ships.length).toBe(0);
+    });
+
+    it("should not add the ship if it goes out of bounds", () => {
+        const board = createBoard(10, 10);
+
+        board.placeShip(createShip(3), 8, 9, false);
+
+        expect(board.ships.length).toBe(0);
+    });
+
+    it("should not add the ship if it colides with another ship", () => {
+        const board = createBoard(10, 10);
+
+        board.placeShip(createShip(3), 3, 0, true);
+        board.placeShip(createShip(3), 0, 0, false);
+
+        expect(board.ships.length).toBe(1);
+    });
+
+    it("should not add the ship if it is adjacent to another ship", () => {
+        const board = createBoard(10, 10);
+
+        board.placeShip(createShip(3), 0, 0, true);
+        board.placeShip(createShip(3), 1, 0, false);
+
+        expect(board.ships.length).toBe(1);
     });
 });
 
@@ -83,12 +109,12 @@ describe("allSunk", () => {
         const board = createBoard(10, 10);
 
         board.placeShip(createShip(2), 0, 0, true);
-        board.placeShip(createShip(2), 1, 0, false);
+        board.placeShip(createShip(2), 2, 0, false);
 
         board.receiveAttack(0, 0);
         board.receiveAttack(1, 0);
-        board.receiveAttack(0, 1);
         board.receiveAttack(0, 2);
+        board.receiveAttack(0, 3);
 
         expect(board.allSunk()).toBe(true);
     });
@@ -97,7 +123,7 @@ describe("allSunk", () => {
         const board = createBoard(10, 10);
 
         board.placeShip(createShip(1), 0, 0, true);
-        board.placeShip(createShip(1), 1, 0, true);
+        board.placeShip(createShip(1), 2, 0, true);
 
         board.receiveAttack(0, 0);
 

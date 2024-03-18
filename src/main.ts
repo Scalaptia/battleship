@@ -256,7 +256,7 @@ const gameLoop = async () => {
 
     // CPU's turn
     headerEl.textContent = `${cpu.name}'s turn`;
-    await delay(1000);
+    await delay(500);
     cpu.attackRand(p1.gameboard);
     renderBoard(p1BoardEl, p1.gameboard, true);
     if (p1.gameboard.allSunk()) {
